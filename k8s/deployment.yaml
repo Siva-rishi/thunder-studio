@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thunder-studio-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: thunder-studio
+  template:
+    metadata:
+      labels:
+        app: thunder-studio
+    spec:
+      containers:
+      - name: backend
+        image: <AWS_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/thunder-studio-backend:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: secret-key
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: database-url
