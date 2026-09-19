@@ -1,30 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: thunder-studio-backend
+  name: thunder-backend-deployment
+  labels:
+    app: thunder-backend
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: thunder-studio
+      app: thunder-backend
   template:
     metadata:
       labels:
-        app: thunder-studio
+        app: thunder-backend
     spec:
       containers:
-      - name: backend
-        image: <AWS_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/thunder-studio-backend:latest
+      - name: flask-app
+        image: 182719847108.dkr.ecr.us-east-1.amazonaws.com/thunder-studio-backend:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
-        env:
-        - name: SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: app-secrets
-              key: secret-key
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: app-secrets
-              key: database-url
+        envFrom:
+        - secretRef:
+            name: db-secret
